@@ -37,7 +37,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 # ----------------------------------------------------------------------
-MAX_N = 1000
+MAX_N = None  # None = use all available texts per task
 LAYERS_PER_PASS = 8
 K_NEIGHBORS = 20
 N_ANCHOR = 500          # subsample anchors for speed
@@ -769,7 +769,7 @@ def load_texts(ds_key, max_n):
     else:
         raise ValueError(f"Unknown load_mode: {mode}")
 
-    if len(texts) > max_n:
+    if max_n is not None and len(texts) > max_n:
         rng = np.random.RandomState(42)
         idx = rng.choice(len(texts), max_n, replace=False)
         idx.sort()
@@ -1034,7 +1034,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--ds", type=str, default="banking77,arguana")
     parser.add_argument("--device", default="cuda")
-    parser.add_argument("--max_n", type=int, default=MAX_N)
+    parser.add_argument("--max_n", type=int, default=MAX_N,
+                        help="Optional cap on per-task texts (default: use all).")
     parser.add_argument("--k", type=int, default=K_NEIGHBORS)
     parser.add_argument("--n_anchor", type=int, default=N_ANCHOR)
     parser.add_argument("--layers_per_pass", type=int, default=LAYERS_PER_PASS)

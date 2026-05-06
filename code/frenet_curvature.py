@@ -37,7 +37,7 @@ warnings.filterwarnings("ignore")
 # Constants
 # ----------------------------------------------------------------------
 
-MAX_N = 1000
+MAX_N = None  # None = use all available texts per task
 LAYERS_PER_PASS = 8
 SUBSPACE_RANK = None        # None = adaptive via variance threshold
 VARIANCE_THRESHOLD = 0.95   # retain 95% explained variance
@@ -776,7 +776,7 @@ def load_texts(ds_key: str, max_n: int) -> List[str]:
     else:
         raise ValueError(f"Unknown load_mode: {mode}")
 
-    if len(texts) > max_n:
+    if max_n is not None and len(texts) > max_n:
         rng = np.random.RandomState(42)
         idx = rng.choice(len(texts), max_n, replace=False)
         idx.sort()
@@ -1147,7 +1147,8 @@ def main():
                         help="Subspace rank r. 0 or omitted = adaptive via variance threshold")
     parser.add_argument("--variance", type=float, default=VARIANCE_THRESHOLD,
                         help="Variance threshold for adaptive rank (default: %(default)s)")
-    parser.add_argument("--max_n", type=int, default=MAX_N)
+    parser.add_argument("--max_n", type=int, default=MAX_N,
+                        help="Optional cap on per-task texts (default: use all).")
     parser.add_argument("--layers_per_pass", type=int, default=LAYERS_PER_PASS)
     parser.add_argument("--output_dir", default="./outputs/frenet_profile_v2")
     parser.add_argument("--models", type=str, default=None,

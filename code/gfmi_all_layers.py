@@ -43,7 +43,7 @@ warnings.filterwarnings("ignore")
 # Constants
 # ──────────────────────────────────────────────────────────────────────
 
-MAX_N = 5000
+MAX_N = None  # None = use all available texts per task
 K_DEFAULT = 30
 N_SCALES = 20
 LAYERS_PER_PASS = 8
@@ -818,7 +818,7 @@ def load_texts(ds_key: str, max_n: int) -> List[str]:
     else:
         raise ValueError(f"Unknown load_mode: {mode}")
 
-    if len(texts) > max_n:
+    if max_n is not None and len(texts) > max_n:
         rng = np.random.RandomState(42)
         idx = rng.choice(len(texts), max_n, replace=False)
         idx.sort()
@@ -1073,7 +1073,8 @@ def main():
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--k", type=int, default=K_DEFAULT)
     parser.add_argument("--scales", type=int, default=N_SCALES)
-    parser.add_argument("--max_n", type=int, default=MAX_N)
+    parser.add_argument("--max_n", type=int, default=MAX_N,
+                        help="Optional cap on per-task texts (default: use all).")
     parser.add_argument("--layers_per_pass", type=int, default=LAYERS_PER_PASS)
     parser.add_argument("--output_dir", default="./outputs/gfmi_profile")
     parser.add_argument("--models", type=str, default=None,
