@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.venv/
+venv/
+env/
+
+outputs/
+logs/
+.cache/
+*.log
+
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# never push raw data
+*.npz
+*.npy
+*.json.gz
+*.gz
